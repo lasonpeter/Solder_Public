@@ -1,0 +1,137 @@
+@page "/auth"
+@inject ISolderAuthService SolderAuthService
+@using Solder.Core.Interfaces.Api.Solder
+@implements IDisposable
+
+<PageTitle>Authentication</PageTitle>
+
+<section class="grid">
+    <article class="card">
+        <h2>Sign In</h2>
+        <div class="field">
+            <label>Email</label>
+            <input type="email" @bind="_loginModel.Email" autocomplete="username"/>
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" @bind="_loginModel.Password" autocomplete="current-password"/>
+        </div>
+        <button class="button-primary" disabled="@_busy" @onclick="LoginAsync">Sign In</button>
+
+        @if (!string.IsNullOrWhiteSpace(_loginMessage))
+        {
+            <p class="message @(_loginError ? "error" : "success")">@_loginMessage</p>
+        }
+    </article>
+
+    <article class="card">
+        <h2>Create Account</h2>
+        <div class="field">
+            <label>Email</label>
+            <input type="email" @bind="_registerModel.Email" autocomplete="email"/>
+        </div>
+        <div class="field">
+            <label>Username</label>
+            <input type="text" @bind="_registerModel.UserName" autocomplete="username"/>
+        </div>
+        <div class="field">
+            <label>Password</label>
+            <input type="password" @bind="_registerModel.Password" autocomplete="new-password"/>
+        </div>
+        <button class="button-primary" disabled="@_busy" @onclick="RegisterAsync">Create Account</button>
+
+        @if (!string.IsNullOrWhiteSpace(_registerMessage))
+        {
+            <p class="message @(_registerError ? "error" : "success")">@_registerMessage</p>
+        }
+    </article>
+</section>
+
+@code {
+    private readonly LoginForm _loginModel = new();
+    private readonly RegisterForm _registerModel = new();
+
+    private bool _busy;
+    private bool _loginError;
+    private bool _registerError;
+    private string? _loginMessage;
+    private string? _registerMessage;
+
+    protected override void OnInitialized()
+    {
+        SolderAuthService.SessionChanged += HandleSessionChanged;
+    }
+
+    private async Task LoginAsync()
+    {
+        _busy = true;
+        _loginError = false;
+        _loginMessage = null;
+
+        try
+        {
+            await SolderAuthService.LoginAsync(new LoginRequest(
+                _loginModel.Email,
+                _loginModel.Password));
+            _loginMessage = "Signed in successfully.";
+        }
+        catch (Exception ex)
+        {
+            _loginError = true;
+            _loginMessage = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task RegisterAsync()
+    {
+        _busy = true;
+        _registerError = false;
+        _registerMessage = null;
+
+        try
+        {
+            await SolderAuthService.RegisterAsync(new RegisterRequest(
+                _registerModel.Email,
+                _registerModel.UserName,
+                _registerModel.Password));
+            _registerMessage = "Account created. You can now sign in.";
+        }
+        catch (Exception ex)
+        {
+            _registerError = true;
+            _registerMessage = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    public void Dispose()
+    {
+        SolderAuthService.SessionChanged -= HandleSessionChanged;
+    }
+
+    private void HandleSessionChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+    private sealed class LoginForm
+    {
+        public string Email { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+    private sealed class RegisterForm
+    {
+        public string Email { get; set; } = string.Empty;
+        public string UserName { get; set; } = string.Empty;
+        public string Password { get; set; } = string.Empty;
+    }
+
+}

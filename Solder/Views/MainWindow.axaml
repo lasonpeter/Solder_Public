@@ -1,0 +1,75 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Solder.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:userControl="clr-namespace:Solder.Controls.UserControl"
+        mc:Ignorable="d" d:DesignWidth="1600" d:DesignHeight="900"
+        x:Class="Solder.Views.MainWindow"
+        x:DataType="vm:MainWindowViewModel"
+        Styles=""
+        Icon="/Assets/avalonia-logo.ico"
+        Title="Solder">
+
+    <Design.DataContext>
+        <!-- This only sets the DataContext for the previewer in an IDE,
+             to set the actual DataContext for runtime, set the DataContext property in code (look at App.axaml.cs) -->
+        <vm:MainWindowViewModel />
+    </Design.DataContext>
+    <Panel>
+        <Grid ColumnDefinitions="250, *">
+            <Border Grid.Column="0" Background="#1A1A1A" Padding="20">
+                <StackPanel Spacing="10">
+                    <StackPanel Orientation="Horizontal" Spacing="10" Margin="0,0,0,30">
+                        <Image Source="/Assets/avalonia-logo.ico" Width="32" Height="32" />
+                        <StackPanel>
+                            <TextBlock Text="ModLauncher" FontWeight="Bold" FontSize="16" />
+                            <TextBlock Text="0.0.1 dev" Foreground="Gray" FontSize="12" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <RadioButton Content="Home" Classes="MenuButton" Command="{Binding ShowHomeCommand}" />
+                    <RadioButton Content="My Library" Classes="MenuButton" IsChecked="True"
+                                 Command="{Binding ShowLibraryCommand}" />
+                    <RadioButton Content="Browse" Classes="MenuButton" Command="{Binding ShowBrowseCommand}" />
+                    <RadioButton Content="Downloads" Classes="MenuButton" Command="{Binding ShowDownloadsCommand}" />
+
+                    <Canvas Height="300" VerticalAlignment="Stretch" />
+
+                    <Separator Background="#333333" Margin="0,10" />
+                    <Button Content="Settings" Classes="LinkButton" />
+                    <Button Content="Profile" Classes="LinkButton" Command="{Binding ShowProfileCommand}" />
+                </StackPanel>
+            </Border>
+            <Panel Grid.Column="1">
+                <ContentControl Content="{Binding CurrentPage}" />
+            </Panel>
+        </Grid>
+
+    </Panel>
+    <Window.DataTemplates>
+        <DataTemplate DataType="vm:HomeViewModel">
+            <userControl:Home />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:MyLibraryViewModel">
+            <userControl:MyLibrary />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:BrowseViewModel">
+            <userControl:Browse />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:DownloadsViewModel">
+            <userControl:Downloads />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:InstanceCreatorViewModel">
+            <userControl:InstanceCreator />
+        </DataTemplate>
+
+        <DataTemplate DataType="vm:InstanceSettingsViewModel">
+            <userControl:InstanceSettingsView />
+        </DataTemplate>
+    </Window.DataTemplates>
+</Window>

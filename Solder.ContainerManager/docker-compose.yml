@@ -1,0 +1,54 @@
+services:
+  container-manager:
+    image: solder-container-manager:latest
+    container_name: solder-container-manager
+    build:
+      context: ..
+      dockerfile: Solder.ContainerManager/Dockerfile
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+    environment:
+      - Docker__NetworkName=mc-network
+      - Docker__Domain=lvh.me
+      - Docker__ImageName=solder-sim:java8-aot
+    networks:
+      - mc-network
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.container-manager.rule=Host(`manager.lvh.me`)"
+      - "traefik.http.services.container-manager.loadbalancer.server.port=8080"
+
+  traefik:
+    image: traefik:v3.6.1
+    container_name: traefik
+    command:
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+      - "--entrypoints.web.address=:80"
+    ports:
+      - "80:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - mc-network
+
+  mc-router:
+    image: itzg/mc-router
+    container_name: mc-router
+    command:
+      - "--in-docker"
+      - "--docker-refresh-interval=30s"
+      - "--auto-scale-up"
+      - "--auto-scale-down"
+      - "--auto-scale-down-after=5m"
+      - "--auto-scale-asleep-motd=§cServer is Sleeping... §7Join to Wake It Up!"
+    ports:
+      - "25565:25565"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - mc-network
+
+networks:
+  mc-network:
+    external: true

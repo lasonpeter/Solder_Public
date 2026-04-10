@@ -1,0 +1,36 @@
+@inject ISolderAuthService SolderAuthService
+@using Solder.Core.Interfaces.Api.Solder
+@implements IDisposable
+
+<nav class="app-nav">
+    <NavLink href="/" Match="NavLinkMatch.All">Overview</NavLink>
+    <NavLink href="/servers">Servers</NavLink>
+    <NavLink href="/auth">Sign In</NavLink>
+    <NavLink href="/account">Account</NavLink>
+
+    @if (SolderAuthService.IsAuthenticatedAsync())
+    {
+        <span class="session-pill">
+            @SolderAuthService.GetUserInfo()?.Email
+        </span>
+    }
+</nav>
+
+@code {
+
+    protected override void OnInitialized()
+    {
+        SolderAuthService.SessionChanged += OnSessionChanged;
+    }
+
+    public void Dispose()
+    {
+        SolderAuthService.SessionChanged -= OnSessionChanged;
+    }
+
+    private void OnSessionChanged()
+    {
+        InvokeAsync(StateHasChanged);
+    }
+
+}

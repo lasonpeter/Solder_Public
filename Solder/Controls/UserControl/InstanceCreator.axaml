@@ -1,0 +1,56 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="clr-namespace:Solder.ViewModels"
+             x:Class="Solder.Controls.UserControl.InstanceCreator"
+             x:DataType="vm:InstanceCreatorViewModel">
+    <Border Background="#2d2d30"
+            CornerRadius="8"
+            BoxShadow="0 10 30 0 #50000000"
+            Padding="20"
+            Width="450"
+            Height="450"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center">
+
+        <StackPanel Spacing="15">
+            <TextBlock Text="Create New Instance" FontSize="20" FontWeight="SemiBold" Foreground="White" />
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Instance Name" Foreground="#999" FontSize="12" />
+                <TextBox Watermark="My Awesome Pack" Text="{Binding InstanceName}" />
+            </StackPanel>
+
+            <Grid ColumnDefinitions="*, 15, *">
+                <StackPanel Grid.Column="0" Spacing="5">
+                    <TextBlock Text="Game Version" Foreground="#999" FontSize="12" />
+                    <ComboBox HorizontalAlignment="Stretch" SelectedIndex="0" ItemsSource="{Binding GameVersions}"
+                              SelectedItem="{Binding SelectedGameVersion}" />
+                </StackPanel>
+
+                <StackPanel Grid.Column="2" Spacing="5">
+                    <TextBlock Text="Modloader" Foreground="#999" FontSize="12" />
+                    <ComboBox HorizontalAlignment="Stretch" SelectedIndex="0" ItemsSource="{Binding Modloaders}"
+                              SelectedItem="{Binding SelectedModloader}" />
+                </StackPanel>
+            </Grid>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Modloader Version" Foreground="#999" FontSize="12" />
+                <ComboBox HorizontalAlignment="Stretch" PlaceholderText="Select version..." />
+            </StackPanel>
+
+            <StackPanel Spacing="5">
+                <TextBlock Text="Description" Foreground="#999" FontSize="12" />
+                <TextBox Height="60" AcceptsReturn="True" TextWrapping="Wrap" Watermark="What's this instance about?"
+                         Text="{Binding Description}" />
+            </StackPanel>
+
+            <StackPanel Orientation="Horizontal" HorizontalAlignment="Right" Spacing="10" Margin="0,10,0,0">
+                <Button Content="Cancel" Background="#CB0532" Foreground="White" Padding="15,8"
+                        Command="{Binding Close}" />
+                <Button Content="Create Instance" Background="#4CAF50" Foreground="White" Padding="15,8"
+                        Command="{Binding Create}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

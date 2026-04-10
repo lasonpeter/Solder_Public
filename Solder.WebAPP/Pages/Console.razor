@@ -1,0 +1,100 @@
+@page "/console/{ServerId:guid}"
+@inject NavigationManager Navigation
+@using Microsoft.AspNetCore.SignalR.Client
+@implements IAsyncDisposable
+
+<div class="container-fluid mt-4">
+    <div class="card bg-dark text-white">
+        <div class="card-header d-flex justify-content-between align-items-center">
+            <h5 class="mb-0">Server Console (@ServerId)</h5>
+            <span class="badge @(IsConnected ? "bg-success" : "bg-danger")">
+                @(IsConnected ? "Connected" : "Disconnected")
+            </span>
+        </div>
+        <div class="card-body p-0">
+            <div id="console-output" class="bg-black p-3"
+                 style="height: 500px; overflow-y: auto; font-family: 'Cascadia Code', monospace; font-size: 0.85rem;">
+                @foreach (var line in _consoleLines)
+                {
+                    <div class="@(line.IsError ? "text-danger" : "text-light")">
+                        <span class="text-muted">[@line.Timestamp.ToString("HH:mm:ss")]</span> @line.Message
+                    </div>
+                }
+            </div>
+        </div>
+        <div class="card-footer bg-secondary p-2">
+            <div class="input-group">
+                <input @bind="_command" @onkeyup="HandleKeyUp"
+                       class="form-control form-control-sm bg-dark text-white border-0"
+                       placeholder="Type a command..."/>
+                <button @onclick="SendCommand" class="btn btn-sm btn-primary">Send</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+@code {
+    [Parameter] public Guid ServerId { get; set; }
+
+    private HubConnection? _hubConnection;
+    private readonly List<ConsoleLine> _consoleLines = new();
+    private string _command = "";
+
+    public bool IsConnected => _hubConnection?.State == HubConnectionState.Connected;
+
+    protected override async Task OnInitializedAsync()
+    {
+        var hubUrl = $"http://{ServerId.ToString().ToLower()}-console.lvh.me/console";
+
+        _hubConnection = new HubConnectionBuilder()
+            .WithUrl(hubUrl)
+            .WithAutomaticReconnect()
+            .Build();
+
+        _hubConnection.On<ServerInstanceConsoleStdResponse>("ReceiveStdOutput", res =>
+        {
+            _consoleLines.Add(new ConsoleLine(res.Message, false, DateTime.Now));
+            StateHasChanged();
+        });
+
+        _hubConnection.On<ServerInstanceConsoleErrResponse>("ReceiveErrOutput", res =>
+        {
+            _consoleLines.Add(new ConsoleLine(res.Message, true, DateTime.Now));
+            StateHasChanged();
+        });
+
+        try
+        {
+            await _hubConnection.StartAsync();
+        }
+        catch (Exception ex)
+        {
+            _consoleLines.Add(new ConsoleLine($"Error connecting: {ex.Message}", true, DateTime.Now));
+        }
+    }
+
+    private async Task HandleKeyUp(KeyboardEventArgs e)
+    {
+        if (e.Key == "Enter") await SendCommand();
+    }
+
+    private async Task SendCommand()
+    {
+        if (!string.IsNullOrWhiteSpace(_command) && IsConnected)
+        {
+            await _hubConnection!.InvokeAsync("InvokeServerCommand", new ServerInstanceConsoleCommandRequest(DateTime.Now, _command));
+            _command = "";
+        }
+    }
+
+    public async ValueTask DisposeAsync()
+    {
+        if (_hubConnection is not null)
+        {
+            await _hubConnection.DisposeAsync();
+        }
+    }
+
+    private record ConsoleLine(string Message, bool IsError, DateTime Timestamp);
+
+}

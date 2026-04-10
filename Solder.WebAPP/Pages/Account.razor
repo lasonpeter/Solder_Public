@@ -1,0 +1,162 @@
+@page "/account"
+@using Solder.Core.Interfaces.Api.Solder
+@inject ISolderAuthService SolderAuthService
+
+<PageTitle>Account</PageTitle>
+
+@if (!_ready)
+{
+    <section class="card">
+        <p>Loading account session...</p>
+    </section>
+}
+else if (!SolderAuthService.IsAuthenticatedAsync())
+{
+    <section class="card">
+        <h2>Not Signed In</h2>
+        <p style="color: var(--text-muted);">Use the authentication page to sign in and manage your user profile.</p>
+        <a class="button-link button-primary" href="/auth">Go To Sign In</a>
+    </section>
+}
+else
+{
+    <section class="grid">
+        <article class="card">
+            <h2>Profile</h2>
+            <p><strong>Email:</strong> @_profileEmail</p>
+            <p><strong>Username:</strong> @_profileUserName</p>
+            <p><strong>Email Confirmed:</strong> @_isEmailConfirmed</p>
+            <div style="display: flex; gap: 0.5rem; margin-top: 1rem;">
+                <button class="button-ghost" disabled="@_busy" @onclick="RefreshProfileAsync">Refresh</button>
+                <button class="button-primary" disabled="@_busy" @onclick="LogoutAsync">Sign Out</button>
+            </div>
+        </article>
+
+        <article class="card">
+            <h2>Update Account</h2>
+            <div class="field">
+                <label>New Email (optional)</label>
+                <input type="email" @bind="_newEmail" autocomplete="email"/>
+            </div>
+            <div class="field">
+                <label>Current Password (required only for password change)</label>
+                <input type="password" @bind="_oldPassword" autocomplete="current-password"/>
+            </div>
+            <div class="field">
+                <label>New Password (optional)</label>
+                <input type="password" @bind="_newPassword" autocomplete="new-password"/>
+            </div>
+            <button class="button-primary" disabled="@_busy" @onclick="UpdateAsync">Save Changes</button>
+
+            @if (!string.IsNullOrWhiteSpace(_message))
+            {
+                <p class="message @(_error ? "error" : "success")">@_message</p>
+            }
+        </article>
+    </section>
+}
+
+@code {
+    private string _newEmail = string.Empty;
+    private string _oldPassword = string.Empty;
+    private string _newPassword = string.Empty;
+    private bool _ready;
+    private bool _busy;
+    private bool _error;
+    private string? _message;
+
+    private string _profileEmail = string.Empty;
+    private string _profileUserName = string.Empty;
+    private bool _isEmailConfirmed;
+
+    protected override async Task OnInitializedAsync()
+    {
+        await SolderAuthService.InitializeAsync();
+
+        if (SolderAuthService.IsAuthenticatedAsync())
+        {
+            await RefreshProfileAsync();
+        }
+
+        _ready = true;
+    }
+
+    private async Task RefreshProfileAsync()
+    {
+        _busy = true;
+        _error = false;
+        _message = null;
+
+        try
+        {
+            var info = await SolderAuthService.GetInfoAsync();
+            _profileEmail = info.Email;
+            _profileUserName = info.UserName;
+            _isEmailConfirmed = info.IsEmailConfirmed;
+            _message = "Profile loaded.";
+        }
+        catch (Exception ex)
+        {
+            _error = true;
+            _message = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task UpdateAsync()
+    {
+        _busy = true;
+        _error = false;
+        _message = null;
+
+        try
+        {
+            var response = await SolderAuthService.UpdateInfoAsync(new UpdateInfoRequest(_newEmail, _oldPassword, _newPassword));
+            _profileEmail = response.Email;
+            _isEmailConfirmed = response.IsEmailConfirmed;
+            _message = "Account updated.";
+
+            _newEmail = string.Empty;
+            _oldPassword = string.Empty;
+            _newPassword = string.Empty;
+        }
+        catch (Exception ex)
+        {
+            _error = true;
+            _message = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+    private async Task LogoutAsync()
+    {
+        _busy = true;
+        _error = false;
+        _message = null;
+
+        try
+        {
+            await SolderAuthService.LogoutAsync();
+            _profileEmail = string.Empty;
+            _profileUserName = string.Empty;
+            _isEmailConfirmed = false;
+            _message = "Session removed.";
+        }
+        catch (Exception ex)
+        {
+            _error = true;
+            _message = ex.Message;
+        }
+        finally
+        {
+            _busy = false;
+        }
+    }
+
+}

@@ -1,0 +1,51 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:vm="using:Solder.ViewModels"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        mc:Ignorable="d" d:DesignWidth="400" d:DesignHeight="600"
+        x:Class="Solder.Views.ProfileWindow"
+        x:DataType="vm:ProfileViewModel"
+        Title="Profile"
+        Width="400" Height="600"
+        MinWidth="400" MinHeight="600"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen">
+    <Panel Margin="20">
+        <StackPanel Spacing="10" IsVisible="{Binding !IsLoggedIn}">
+            <TextBlock Text="Login" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" />
+            <TextBox Text="{Binding Email}" Watermark="Email" />
+            <TextBox Text="{Binding UserName}" Watermark="Username" />
+            <TextBox Text="{Binding Password}" Watermark="Password" PasswordChar="*" />
+            <Button Content="Login" Command="{Binding LoginCommand}" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" />
+            <Button Content="Register" Command="{Binding RegisterCommand}" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" Classes="Outline" />
+            <TextBlock Text="{Binding ErrorMessage}" Foreground="Red"
+                       IsVisible="{Binding ErrorMessage, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
+        </StackPanel>
+
+        <StackPanel Spacing="10" IsVisible="{Binding IsLoggedIn}">
+            <TextBlock Text="Profile" FontSize="20" FontWeight="Bold" Margin="0,0,0,10" />
+            <TextBlock Text="{Binding UserInfo}" />
+
+            <TextBlock Text="Your Projects" FontWeight="Bold" Margin="0,10,0,5" />
+            <ItemsControl ItemsSource="{Binding Projects}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate>
+                        <Border BorderBrush="#333333" BorderThickness="1" Margin="0,0,0,5" Padding="10"
+                                CornerRadius="4">
+                            <StackPanel>
+                                <TextBlock Text="{Binding ProjectName}" FontWeight="Bold" />
+                                <TextBlock Text="{Binding ProjectDescription}" FontSize="12" Foreground="Gray" />
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <Button Content="Logout" Command="{Binding LogoutCommand}" HorizontalAlignment="Stretch"
+                    HorizontalContentAlignment="Center" Classes="Outline" />
+        </StackPanel>
+    </Panel>
+</Window>

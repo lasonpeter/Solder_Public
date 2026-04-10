@@ -1,0 +1,11 @@
+<Solution>
+    <Project Path="Solder.ContainerManager/Solder.ContainerManager.csproj"/>
+    <Project Path="Solder.Core/Solder.Core.csproj"/>
+    <Project Path="Solder.Infrastructure/Solder.Infrastructure.csproj"/>
+    <Project Path="Solder.ServerInstanceManager/Solder.ServerInstanceManager.csproj"/>
+    <Project Path="Solder.Shared/Solder.Shared.csproj"/>
+    <Project Path="Solder.Testing/Solder.Testing.csproj"/>
+    <Project Path="Solder.WebAPI/Solder.WebAPI.csproj"/>
+    <Project Path="Solder.WebAPP/Solder.WebAPP.csproj"/>
+    <Project Path="Solder/Solder.csproj"/>
+</Solution>

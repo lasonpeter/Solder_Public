@@ -1,0 +1,30 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+
+    <PropertyGroup>
+        <TargetFramework>net9.0</TargetFramework>
+        <Nullable>enable</Nullable>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <InvariantGlobalization>true</InvariantGlobalization>
+        <PublishAot>true</PublishAot>
+        <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+        <PublishAot>true</PublishAot>
+        <InvariantGlobalization>false</InvariantGlobalization> <!-- keep if you need ICU -->
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="Colorful.Console" Version="1.2.15"/>
+        <PackageReference Include="FastEndpoints" Version="8.1.0"/>
+        <PackageReference Include="Microsoft.Extensions.Hosting" Version="10.0.5"/>
+    </ItemGroup>
+
+    <ItemGroup>
+        <Content Include="..\.dockerignore">
+            <Link>.dockerignore</Link>
+        </Content>
+    </ItemGroup>
+
+    <ItemGroup>
+        <ProjectReference Include="..\Solder.Shared\Solder.Shared.csproj"/>
+    </ItemGroup>
+
+</Project>

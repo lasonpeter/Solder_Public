@@ -1,0 +1,36 @@
+.app-nav {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    flex-wrap: wrap;
+}
+
+.app-nav ::deep a {
+    text-decoration: none;
+    color: #264961;
+    font-size: 0.95rem;
+    font-weight: 600;
+    padding: 0.45rem 0.8rem;
+    border-radius: 999px;
+    transition: background-color 0.2s ease, color 0.2s ease;
+}
+
+.app-nav ::deep a.active {
+    background: #0b4f7d;
+    color: #f6fbff;
+}
+
+.app-nav ::deep a:hover {
+    background: rgba(11, 79, 125, 0.12);
+}
+
+.session-pill {
+    margin-left: 0.3rem;
+    background: rgba(14, 122, 109, 0.15);
+    color: #0a4e45;
+    border: 1px solid rgba(14, 122, 109, 0.3);
+    border-radius: 999px;
+    padding: 0.42rem 0.75rem;
+    font-size: 0.85rem;
+    font-weight: 600;
+}

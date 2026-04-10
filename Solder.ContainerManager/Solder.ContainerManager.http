@@ -1,0 +1,6 @@
+@Solder.ContainerManager_HostAddress = http://localhost:5196
+
+GET {{Solder.ContainerManager_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

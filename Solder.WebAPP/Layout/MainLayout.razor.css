@@ -1,0 +1,56 @@
+.app-shell {
+    min-height: 100vh;
+    padding: 1.5rem;
+    display: grid;
+    grid-template-rows: auto 1fr;
+    gap: 1.5rem;
+}
+
+.app-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 1rem;
+    background: rgba(255, 255, 255, 0.8);
+    border: 1px solid rgba(12, 44, 68, 0.15);
+    border-radius: 1rem;
+    padding: 0.85rem 1rem;
+    backdrop-filter: blur(6px);
+}
+
+.brand {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.6rem;
+    text-decoration: none;
+    color: #0b2336;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+}
+
+.brand-mark {
+    width: 2rem;
+    height: 2rem;
+    border-radius: 0.65rem;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    color: #f4f8fc;
+    background: linear-gradient(145deg, #0e7a6d, #0b4f7d);
+}
+
+.app-main {
+    width: min(100%, 980px);
+    margin: 0 auto;
+}
+
+@media (max-width: 780px) {
+    .app-shell {
+        padding: 1rem;
+    }
+
+    .app-header {
+        align-items: stretch;
+        flex-direction: column;
+    }
+}

@@ -1,0 +1,85 @@
+﻿<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:templatedControls="clr-namespace:Solder.Controls.TemplatedControls">
+
+
+    <Style Selector="RadioButton.MenuButton">
+        <Setter Property="Background" Value="#181818" />
+        <Setter Property="Foreground" Value="#BDBDBD" />
+        <Setter Property="Padding" Value="12,8" />
+        <Setter Property="CornerRadius" Value="8" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <BrushTransition Property="Background" Duration="0:0:0.2" Easing="CircularEaseOut" />
+                <BrushTransition Property="Foreground" Duration="0:0:0.2" />
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.15" Easing="CubicEaseOut" />
+            </Transitions>
+        </Setter>
+
+        <Setter Property="Template">
+            <ControlTemplate>
+                <Border Background="{TemplateBinding Background}"
+                        CornerRadius="{TemplateBinding CornerRadius}"
+                        Padding="{TemplateBinding Padding}"
+                        RenderTransform="{TemplateBinding RenderTransform}">
+                    <ContentPresenter Content="{TemplateBinding Content}"
+                                      Foreground="{TemplateBinding Foreground}"
+                                      VerticalAlignment="Center" />
+                </Border>
+            </ControlTemplate>
+        </Setter>
+    </Style>
+
+    <Style Selector="RadioButton.MenuButton:pointerover">
+        <Setter Property="Background" Value="#2A2A2A" />
+        <Setter Property="Foreground" Value="White" />
+    </Style>
+
+    <Style Selector="RadioButton.MenuButton:checked">
+        <Setter Property="Background" Value="#3d3d3d" />
+        <Setter Property="Foreground" Value="White" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Setter Property="RenderTransform" Value="translateX(4px)" />
+    </Style>
+
+    <Style Selector="RadioButton.MenuButton:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.98) translateX(4px)" />
+    </Style>
+
+    <Style Selector="Button">
+        <Setter Property="Background" Value="#BDBDBD" />
+        <Setter Property="RenderTransform" Value="scale(1)" />
+        <Setter Property="Transitions">
+            <Transitions>
+                <TransformOperationsTransition Property="RenderTransform" Duration="0:0:0.1" Easing="CubicEaseOut" />
+            </Transitions>
+        </Setter>
+    </Style>
+    <Style Selector="Button:pointerover">
+        <Setter Property="RenderTransform" Value="scale(1.05)" />
+    </Style>
+    <Style Selector="Button:pressed">
+        <Setter Property="RenderTransform" Value="scale(0.95)" />
+    </Style>
+
+    <Style Selector="templatedControls|InstanceTemplatedControl">
+        <Setter Property="Transitions">
+            <Transitions>
+                <ThicknessTransition Property="Margin" Duration="0:0:0.25" Easing="CubicEaseOut" />
+                <BrushTransition Property="BorderBrush" Duration="0:0:0.2" />
+            </Transitions>
+        </Setter>
+    </Style>
+
+    <Style Selector="templatedControls|InstanceTemplatedControl:pointerover">
+        <Setter Property="Margin" Value="0,-5,0,5" />
+        <Setter Property="BorderThickness" Value="2" />
+        <Setter Property="BorderBrush" Value="Green" />
+    </Style>
+
+    <Style Selector="templatedControls|InstanceTemplatedControl[IsAddInstanceCard=True]:pointerover">
+        <Setter Property="BorderBrush" Value="#707070" />
+        <Setter Property="BorderThickness" Value="1" />
+    </Style>
+
+</Styles>

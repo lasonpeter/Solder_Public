@@ -1,0 +1,62 @@
+﻿<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:templatedControls="clr-namespace:Solder.Controls.TemplatedControls"
+             xmlns:vm="clr-namespace:Solder.ViewModels"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="Solder.Controls.UserControl.MyLibrary"
+             x:DataType="vm:MyLibraryViewModel">
+    <Panel>
+        <Grid Margin="0" RowDefinitions="50, *">
+            <Panel Grid.Row="0" Background="#1A1A1A">
+                <TextBlock Text="Browse Modpacks" VerticalAlignment="Center" Margin="20,0" FontWeight="Bold" />
+            </Panel>
+
+            <ScrollViewer Grid.Row="1"
+                          VerticalScrollBarVisibility="Auto"
+                          HorizontalScrollBarVisibility="Disabled">
+                <ItemsControl ItemsSource="{Binding Instances}">
+                    <ItemsControl.ItemsPanel>
+                        <ItemsPanelTemplate>
+                            <WrapPanel Orientation="Horizontal"
+                                       ItemSpacing="10"
+                                       LineSpacing="10"
+                                       Margin="20" />
+                        </ItemsPanelTemplate>
+                    </ItemsControl.ItemsPanel>
+
+                    <ItemsControl.ItemTemplate>
+                        <DataTemplate x:DataType="vm:InstanceTemplateViewModel">
+                            <templatedControls:InstanceTemplatedControl
+                                Name="{Binding Name}"
+                                Version="{Binding Version}"
+                                Id="{Binding InstanceId}"
+                                IsAddInstanceCard="{Binding IsAddInstanceCard}" />
+                        </DataTemplate>
+                    </ItemsControl.ItemTemplate>
+                </ItemsControl>
+            </ScrollViewer>
+        </Grid>
+        <Panel Name="ModalOverlay"
+               Background="#AA1E1E1E"
+               IsVisible="{Binding CurrentModal, Converter={x:Static ObjectConverters.IsNotNull}}">
+
+            <Button Command="{Binding CloseModalCommand}"
+                    Background="Transparent"
+                    BorderThickness="0"
+                    HorizontalAlignment="Stretch"
+                    VerticalAlignment="Stretch">
+                <Button.Template>
+                    <ControlTemplate>
+                        <Panel Background="Transparent" />
+                    </ControlTemplate>
+                </Button.Template>
+            </Button>
+
+            <ContentControl Content="{Binding CurrentModal}"
+                            VerticalAlignment="Center"
+                            HorizontalAlignment="Center" />
+        </Panel>
+    </Panel>
+</UserControl>

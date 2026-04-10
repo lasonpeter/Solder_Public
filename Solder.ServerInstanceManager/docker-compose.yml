@@ -1,0 +1,20 @@
+services:
+  server-instance-manager:
+    image: solder-sim:java8-aot
+    container_name: server-instance-019d7385-fef7-7cbe-b2c1-675deb3abf38
+    environment:
+      SERVER_INSTANCE_ID: 019d7385-fef7-7cbe-b2c1-675deb3abf38
+      ASPNETCORE_ENVIRONMENT: Development
+      ASPNETCORE_URLS: http://+:8080
+      SolderApi__BaseUrl: http://localhost:5015
+      MinecraftJarService__StoragePath: /var/solder/jars
+      ServerInstance__WorkingDirectory: /instance
+    network_mode: host
+    volumes:
+      - instance-data:/instance
+      - minecraft-jars:/var/solder/jars
+    restart: unless-stopped
+
+volumes:
+  instance-data:
+  minecraft-jars:

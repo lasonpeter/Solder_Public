@@ -1,0 +1,11 @@
+@Solder.ServerInstanceManager_HostAddress = http://localhost:5114
+
+GET {{Solder.ServerInstanceManager_HostAddress}}/todos/
+Accept: application/json
+
+###
+
+GET {{Solder.ServerInstanceManager_HostAddress}}/todos/1
+Accept: application/json
+
+###
